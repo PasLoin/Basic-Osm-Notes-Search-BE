@@ -7,16 +7,33 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
         }
         .container {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .form-container {
             flex: 1;
             margin-right: 20px;
+            padding: 20px;
+            box-sizing: border-box;
         }
         .map-container {
             flex: 2;
+            padding: 20px;
+            box-sizing: border-box;
         }
         .form-group {
             margin-bottom: 15px;
@@ -55,6 +72,8 @@
             border: 1px solid #ccc;
             background-color: #f9f9f9;
             word-wrap: break-word;
+            width: 100%;
+            text-align: center;
         }
         .checkbox-group {
             display: flex;
@@ -69,68 +88,107 @@
         .checkbox-group input[type="checkbox"] {
             margin-right: 5px;
         }
+        .export-options {
+            margin-top: 20px;
+            display: none;
+            flex-direction: row;
+            align-items: center;
+        }
+        .export-options button {
+            margin: 5px;
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .export-options button:hover {
+            background-color: #0056b3;
+        }
     </style>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
-    <div class="container">
+    <div class="header">
         <h1>Search for Notes</h1>
-        <form id="searchForm">
-            <div class="checkbox-group">
-                <label>
-                    <input type="checkbox" name="closed" value="open">
-                    Open
-                </label>
-                <label>
-                    <input type="checkbox" name="closed" value="closed">
-                    Closed
-                </label>
-            </div>
-            <div class="form-group">
-                <label for="q">Text Search Query</label>
-                <input type="text" id="q" name="q" placeholder="Enter search query">
-            </div>
-            <div class="form-group">
-                <label for="limit">Maximum Number of Results</label>
-                <input type="number" id="limit" name="limit" min="1" max="10000" placeholder="Enter limit">
-            </div>
-            <div class="form-group">
-                <label for="display_name">User Display Name</label>
-                <input type="text" id="display_name" name="display_name" placeholder="Enter display name">
-            </div>
-            <div class="form-group">
-                <label for="bbox">Bounding Box</label>
-                <input type="text" id="bbox" name="bbox" placeholder="Enter bounding box" value="2.542619,49.490919,7.232075,51.508742">
-            </div>
-            <div class="form-group">
-                <label for="from">From Date</label>
-                <input type="date" id="from" name="from">
-            </div>
-            <div class="form-group">
-                <label for="to">To Date</label>
-                <input type="date" id="to" name="to">
-            </div>
-            <div class="form-group">
-                <button type="button" onclick="searchNotes()">Search</button>
-            </div>
-        </form>
-        <div class="api-call" id="apiCall">
-            <strong>API Call:</strong>
-            <pre id="apiUrl"></pre>
+    </div>
+    <div class="container">
+        <div class="form-container">
+            <form id="searchForm">
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" name="closed" value="open">
+                        Open
+                    </label>
+                    <label>
+                        <input type="checkbox" name="closed" value="closed">
+                        Closed
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label for="q">Text Search Query</label>
+                    <input type="text" id="q" name="q" placeholder="Enter search query">
+                </div>
+                <div class="form-group">
+                    <label for="limit">Maximum Number of Results</label>
+                    <input type="number" id="limit" name="limit" min="1" max="10000" placeholder="Enter limit">
+                </div>
+                <div class="form-group">
+                    <label for="display_name">User Display Name</label>
+                    <input type="text" id="display_name" name="display_name" placeholder="Enter display name">
+                </div>
+                <div class="form-group">
+                    <label for="bbox">Bounding Box</label>
+                    <input type="text" id="bbox" name="bbox" placeholder="Enter bounding box" value="2.542619,49.490919,7.232075,51.508742">
+                </div>
+                <div class="form-group">
+                    <label for="from">From Date</label>
+                    <input type="date" id="from" name="from">
+                </div>
+                <div class="form-group">
+                    <label for="to">To Date</label>
+                    <input type="date" id="to" name="to">
+                </div>
+                <div class="form-group">
+                    <button type="button" onclick="searchNotes()">Search</button>
+                </div>
+            </form>
+        </div>
+        <div class="map-container">
+            <div id="map"></div>
         </div>
     </div>
-    <div class="map-container">
-        <div id="map"></div>
+    <div class="api-call" id="apiCall">
+        <strong>API Call:</strong>
+        <pre id="apiUrl"></pre>
+    </div>
+    <div class="export-options" id="exportOptions">
+        <button onclick="exportToJSON()">Export to JSON</button>
+        <button onclick="exportToGeoJSON()">Export to GeoJSON</button>
     </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        const map = L.map('map').setView([50.8371, 4.3676], 7);
+        const map = L.map('map').setView([50.8371, 4.3676], 9); // Decreased zoom level to 9
 
         L.tileLayer('https://tile.openstreetmap.be/osmbe/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright/en">OpenStreetMap</a> contributors, Tiles generated by <a href="https://www.champs-libres.coop/">Champs-Libres</a>',
             maxZoom: 18,
         }).addTo(map);
+
+        // Update bounding box on map navigation
+        map.on('moveend', function() {
+            const bounds = map.getBounds();
+            const bbox = [
+                bounds.getSouthWest().lng,
+                bounds.getSouthWest().lat,
+                bounds.getNorthEast().lng,
+                bounds.getNorthEast().lat
+            ].join(',');
+            document.getElementById('bbox').value = bbox;
+        });
+
+        let searchResults = [];
 
         function searchNotes() {
             const form = document.getElementById('searchForm');
@@ -165,7 +223,9 @@
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
+                    searchResults = data.features;
                     displayNotesOnMap(data.features);
+                    document.getElementById('exportOptions').style.display = 'flex';
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -194,6 +254,30 @@
                 L.marker([coordinates[1], coordinates[0]]).addTo(map)
                     .bindPopup(popupContent);
             });
+        }
+
+        function exportToJSON() {
+            const jsonString = JSON.stringify(searchResults, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'notes.json';
+            a.click();
+        }
+
+        function exportToGeoJSON() {
+            const geojson = {
+                type: "FeatureCollection",
+                features: searchResults
+            };
+            const jsonString = JSON.stringify(geojson, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'notes.geojson';
+            a.click();
         }
     </script>
 </body>
