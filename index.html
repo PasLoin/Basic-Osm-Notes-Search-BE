@@ -105,6 +105,32 @@
         .export-options button:hover {
             background-color: #0056b3;
         }
+        .status-bar {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            width: 100%;
+            text-align: center;
+            display: none;
+        }
+        .status-bar div {
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .status-bar .sending {
+            background-color: #ffeb3b;
+        }
+        .status-bar .response-code {
+            background-color: #4caf50;
+        }
+        .status-bar .data-count {
+            background-color: #2196f3;
+        }
+        .status-bar .displaying {
+            background-color: #ff9800;
+        }
     </style>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
@@ -158,9 +184,11 @@
             <div id="map"></div>
         </div>
     </div>
-    <div class="api-call" id="apiCall">
-        <strong>API Call:</strong>
-        <pre id="apiUrl"></pre>
+    <div class="status-bar" id="statusBar">
+        <div class="sending" id="sendingStatus">Sending API call...</div>
+        <div class="response-code" id="responseCodeStatus" style="display: none;">Response Code: <span id="responseCode"></span></div>
+        <div class="data-count" id="dataCountStatus" style="display: none;">Number of Data: <span id="dataCount"></span></div>
+        <div class="displaying" id="displayingStatus" style="display: none;">Displaying data on map...</div>
     </div>
     <div class="export-options" id="exportOptions">
         <button onclick="exportToJSON()">Export to JSON</button>
@@ -218,13 +246,26 @@
             }
 
             const apiUrl = `https://api.openstreetmap.org/api/0.6/notes/search.json?${params.toString()}`;
-            document.getElementById('apiUrl').textContent = apiUrl;
+
+            // Show status bar
+            document.getElementById('statusBar').style.display = 'block';
+            document.getElementById('sendingStatus').style.display = 'block';
+            document.getElementById('responseCodeStatus').style.display = 'none';
+            document.getElementById('dataCountStatus').style.display = 'none';
+            document.getElementById('displayingStatus').style.display = 'none';
 
             fetch(apiUrl)
-                .then(response => response.json())
+                .then(response => {
+                    document.getElementById('responseCode').textContent = response.status;
+                    document.getElementById('responseCodeStatus').style.display = 'block';
+                    return response.json();
+                })
                 .then(data => {
                     searchResults = data.features;
+                    document.getElementById('dataCount').textContent = searchResults.length;
+                    document.getElementById('dataCountStatus').style.display = 'block';
                     displayNotesOnMap(data.features);
+                    document.getElementById('displayingStatus').style.display = 'block';
                     document.getElementById('exportOptions').style.display = 'flex';
                 })
                 .catch(error => {
@@ -279,6 +320,14 @@
             a.download = 'notes.geojson';
             a.click();
         }
+
+        // Validator for Maximum Number of Results
+        document.getElementById('limit').addEventListener('input', function() {
+            const value = parseInt(this.value, 10);
+            if (value > 10000) {
+                this.value = 10000;
+            }
+        });
     </script>
 </body>
 </html>
