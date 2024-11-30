@@ -8,10 +8,15 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            display: flex;
+            flex-direction: row;
         }
         .container {
-            max-width: 600px;
-            margin: auto;
+            flex: 1;
+            margin-right: 20px;
+        }
+        .map-container {
+            flex: 2;
         }
         .form-group {
             margin-bottom: 15px;
@@ -42,8 +47,7 @@
             background-color: #f9f9f9;
         }
         #map {
-            height: 400px;
-            margin-top: 20px;
+            height: 600px;
         }
         .api-call {
             margin-top: 20px;
@@ -110,11 +114,13 @@
                 <button type="button" onclick="searchNotes()">Search</button>
             </div>
         </form>
-        <div id="map"></div>
         <div class="api-call" id="apiCall">
             <strong>API Call:</strong>
             <pre id="apiUrl"></pre>
         </div>
+    </div>
+    <div class="map-container">
+        <div id="map"></div>
     </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
