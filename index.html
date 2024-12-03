@@ -86,7 +86,33 @@
             align-items: center;
         }
         .checkbox-group input[type="checkbox"] {
-            margin-right: 5px;
+            display: none;
+        }
+        .checkbox-group .switch {
+            position: relative;
+            width: 60px;
+            height: 34px;
+            background-color: #ccffcc; /* Light green for open */
+            border-radius: 34px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .checkbox-group .switch:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+        .checkbox-group input[type="checkbox"]:checked + .switch {
+            background-color: #ffcccc; /* Light red for closed */
+        }
+        .checkbox-group input[type="checkbox"]:checked + .switch:before {
+            transform: translateX(26px);
         }
         .export-options {
             margin-top: 20px;
@@ -143,12 +169,10 @@
             <form id="searchForm">
                 <div class="checkbox-group">
                     <label>
-                        <input type="checkbox" name="closed" value="open">
-                        Open
-                    </label>
-                    <label>
-                        <input type="checkbox" name="closed" value="closed">
-                        Closed
+                        <span>Open</span>
+                        <input type="checkbox" id="statusSwitch" checked>
+                        <span class="switch"></span>
+                        <span>Closed</span>
                     </label>
                 </div>
                 <div class="form-group">
@@ -235,14 +259,11 @@
             }
 
             // Handle the closed parameter
-            const openChecked = formData.get('closed') === 'open';
-            const closedChecked = formData.get('closed') === 'closed';
-            if (openChecked && closedChecked) {
-                params.append('closed', '-1'); // Include all notes
-            } else if (openChecked) {
+            const statusSwitch = document.getElementById('statusSwitch');
+            if (statusSwitch.checked) {
+                params.append('closed', '3650'); // Include closed notes up to 10 years ago
+            } else {
                 params.append('closed', '0'); // Include only open notes
-            } else if (closedChecked) {
-                params.append('closed', '1825'); // Include closed notes up to 5 years ago
             }
 
             const apiUrl = `https://api.openstreetmap.org/api/0.6/notes/search.json?${params.toString()}`;
