@@ -15,7 +15,7 @@ const CONFIG = {
     // Map Configuration
     MAP: {
         CENTER: [50.831, 4.368], // 
-        ZOOM: 12,
+        ZOOM: 13,
         MIN_ZOOM: 7,
         MAX_ZOOM: 20,
         BELGIUM_BOUNDS: [
