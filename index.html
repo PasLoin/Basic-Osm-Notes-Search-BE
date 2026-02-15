@@ -1,357 +1,299 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr-BE">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notes Search</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .header {
-            width: 100%;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .container {
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            margin-top: 20px;
-        }
-        .form-container {
-            flex: 1;
-            margin-right: 20px;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .map-container {
-            flex: 2;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-        .form-group button {
-            padding: 10px 15px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .form-group button:hover {
-            background-color: #0056b3;
-        }
-        .response {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-        }
-        #map {
-            height: 600px;
-        }
-        .api-call {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            word-wrap: break-word;
-            width: 100%;
-            text-align: center;
-        }
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .checkbox-group label {
-            margin-right: 10px;
-            display: flex;
-            align-items: center;
-        }
-        .checkbox-group input[type="checkbox"] {
-            display: none;
-        }
-        .checkbox-group .switch {
-            position: relative;
-            width: 60px;
-            height: 34px;
-            background-color: #ccffcc; /* Light green for open */
-            border-radius: 34px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .checkbox-group .switch:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            border-radius: 50%;
-            transition: 0.2s;
-        }
-        .checkbox-group input[type="checkbox"]:checked + .switch {
-            background-color: #ffcccc; /* Light red for closed */
-        }
-        .checkbox-group input[type="checkbox"]:checked + .switch:before {
-            transform: translateX(26px);
-        }
-        .export-options {
-            margin-top: 20px;
-            display: none;
-            flex-direction: row;
-            align-items: center;
-        }
-        .export-options button {
-            margin: 5px;
-            padding: 10px 15px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .export-options button:hover {
-            background-color: #0056b3;
-        }
-        .status-bar {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            width: 100%;
-            text-align: center;
-            display: none;
-        }
-        .status-bar div {
-            margin: 5px 0;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .status-bar .sending {
-            background-color: #ffeb3b;
-        }
-        .status-bar .response-code {
-            background-color: #4caf50;
-        }
-        .status-bar .data-count {
-            background-color: #2196f3;
-        }
-        .status-bar .displaying {
-            background-color: #ff9800;
-        }
-    </style>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        
+    <title>Recherche de Notes OSM Belgique | OpenStreetMap Belgium Notes Search</title>
+    <meta name="description" content="Outil de recherche et visualisation des notes OpenStreetMap en Belgique. Trouvez rapidement les notes OSM ouvertes et fermées pour contribuer à la carte.">
+    <meta name="keywords" content="OpenStreetMap, OSM, notes, Belgique, Belgium, cartographie, mapping, contributeur, open data, Vlaanderen, Wallonie, Bruxelles">
+    <meta name="author" content="PasLoin">
+    
+   
+    <meta property="og:title" content="OSM Notes Search Belgium">
+    <meta property="og:description" content="Recherchez et visualisez les notes OpenStreetMap en Belgique">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pasloin.github.io/Basic-Osm-Notes-Search-BE/">
+    <meta property="og:locale" content="fr_BE">
+    <meta property="og:locale:alternate" content="nl_BE">
+    <meta property="og:locale:alternate" content="en_GB">
+    
+  
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="OSM Notes Search Belgium">
+    <meta name="twitter:description" content="Outil de recherche de notes OpenStreetMap pour la Belgique">
+    
+    
+    <link rel="canonical" href="https://pasloin.github.io/Basic-Osm-Notes-Search-BE/">
+    
+    
+    <link rel="alternate" hreflang="fr-BE" href="https://pasloin.github.io/Basic-Osm-Notes-Search-BE/">
+    <link rel="alternate" hreflang="nl-BE" href="https://pasloin.github.io/Basic-Osm-Notes-Search-BE/">
+    <link rel="alternate" hreflang="en" href="https://pasloin.github.io/Basic-Osm-Notes-Search-BE/">
+    
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='40' r='20' fill='%23007BFF'/><path d='M50 60 L50 80' stroke='%23007BFF' stroke-width='4'/></svg>">
+    
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    
+    
+    <link rel="stylesheet" href="css/styles.css">
+    
+    
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "OSM Notes Search Belgium",
+        "description": "Outil de recherche de notes OpenStreetMap en Belgique pour contributeurs",
+        "url": "https://pasloin.github.io/Basic-Osm-Notes-Search-BE/",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR"
+        },
+        "creator": {
+            "@type": "Organization",
+            "name": "PasLoin"
+        },
+        "keywords": "OpenStreetMap, OSM, notes, mapping, Belgium, cartographie"
+    }
+    </script>
 </head>
 <body>
-    <div class="header">
-        <h1>Search for Notes</h1>
-    </div>
-    <div class="container">
-        <div class="form-container">
-            <form id="searchForm">
-                <div class="checkbox-group">
-                    <label>
-                        <span>Open</span>
-                        <input type="checkbox" id="statusSwitch" checked>
-                        <span class="switch"></span>
-                        <span>Closed</span>
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label for="q">Text Search Query</label>
-                    <input type="text" id="q" name="q" placeholder="Enter search query">
-                </div>
-                <div class="form-group">
-                    <label for="limit">Maximum Number of Results</label>
-                    <input type="number" id="limit" name="limit" min="1" max="10000" placeholder="Enter limit">
-                </div>
-                <div class="form-group">
-                    <label for="display_name">User Display Name</label>
-                    <input type="text" id="display_name" name="display_name" placeholder="Enter display name">
-                </div>
-                <div class="form-group">
-                    <label for="bbox">Bounding Box</label>
-                    <input type="text" id="bbox" name="bbox" placeholder="Enter bounding box" value="2.542619,49.490919,7.232075,51.508742">
-                </div>
-                <div class="form-group">
-                    <label for="from">From Date</label>
-                    <input type="date" id="from" name="from">
-                </div>
-                <div class="form-group">
-                    <label for="to">To Date</label>
-                    <input type="date" id="to" name="to">
-                </div>
-                <div class="form-group">
-                    <button type="button" onclick="searchNotes()">Search</button>
-                </div>
-            </form>
+    <!-- Header -->
+    <header role="banner" class="header">
+        <div class="header-content">
+            <h1>
+                OpenStreetMap Notes Search
+                <span class="subtitle">Belgium / België / Belgique</span>
+            </h1>
+            <p class="tagline">Tool for OSM contributors</p>
         </div>
-        <div class="map-container">
-            <div id="map"></div>
+        
+        <!-- Theme toggle -->
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+            <span class="theme-icon">☾</span>
+        </button>
+    </header>
+
+    <!-- Main Content -->
+    <main role="main" class="main-container">
+        
+        <!-- Statistics Bar -->
+        <section class="stats-bar" id="statsBar" aria-label="Statistics">
+            <div class="stat-card">
+                <strong id="totalNotes" class="stat-value">0</strong>
+                <span class="stat-label">Notes found</span>
+            </div>
+            <div class="stat-card">
+                <strong id="openNotes" class="stat-value">0</strong>
+                <span class="stat-label">Open</span>
+            </div>
+            <div class="stat-card">
+                <strong id="closedNotes" class="stat-value">0</strong>
+                <span class="stat-label">Closed</span>
+            </div>
+            <div class="stat-card">
+                <strong id="avgComments" class="stat-value">0</strong>
+                <span class="stat-label">Avg. comments</span>
+            </div>
+        </section>
+
+        <div class="content-wrapper">
+            <!-- Search Form -->
+            <aside class="sidebar" role="complementary">
+                <form id="searchForm" class="search-form" aria-label="Search form">
+                    
+                    <!-- Status Switch -->
+                    <div class="form-group">
+                        <label class="form-label">Note status</label>
+                        <div class="status-switch-container">
+                            <span class="status-label">Open</span>
+                            <label class="status-switch" for="statusSwitch">
+                                <input type="checkbox" id="statusSwitch" aria-label="Toggle between open and closed notes">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="status-label">Closed</span>
+                        </div>
+                    </div>
+
+                    <!-- Text Search -->
+                    <div class="form-group">
+                        <label for="q" class="form-label">Text search</label>
+                        <input 
+                            type="text" 
+                            id="q" 
+                            name="q" 
+                            class="form-input"
+                            placeholder="e.g. traffic light, missing sign..."
+                            aria-describedby="q-help">
+                        <small id="q-help" class="form-help">Search keywords in note comments</small>
+                    </div>
+
+                    <!-- Limit -->
+                    <div class="form-group">
+                        <label for="limit" class="form-label">Maximum results</label>
+                        <input 
+                            type="number" 
+                            id="limit" 
+                            name="limit" 
+                            class="form-input"
+                            min="1" 
+                            max="10000" 
+                            placeholder="9999 (default)"
+                            aria-describedby="limit-help">
+                        <small id="limit-help" class="form-help">Maximum: 10,000</small>
+                    </div>
+
+                    <!-- Display Name -->
+                    <div class="form-group">
+                        <label for="display_name" class="form-label">OSM username</label>
+                        <input 
+                            type="text" 
+                            id="display_name" 
+                            name="display_name" 
+                            class="form-input"
+                            placeholder="e.g. username"
+                            aria-describedby="display_name-help">
+                        <small id="display_name-help" class="form-help">Notes created by this user</small>
+                    </div>
+
+                    <!-- Bounding Box -->
+                    <div class="form-group">
+                        <label for="bbox" class="form-label">Bounding box</label>
+                        <input 
+                            type="text" 
+                            id="bbox" 
+                            name="bbox" 
+                            class="form-input"
+                            value="2.542619,49.490919,7.232075,51.508742"
+                            aria-describedby="bbox-help">
+                        <small id="bbox-help" class="form-help">Format: min_lng,min_lat,max_lng,max_lat</small>
+                        <button type="button" id="resetBbox" class="btn-secondary btn-small">Reset to Belgium</button>
+                    </div>
+
+                    <!-- Date Range -->
+                    <div class="form-group">
+                        <label for="from" class="form-label">Start date</label>
+                        <input 
+                            type="date" 
+                            id="from" 
+                            name="from" 
+                            class="form-input"
+                            aria-describedby="from-help">
+                        <small id="from-help" class="form-help">Notes created from this date</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="to" class="form-label">End date</label>
+                        <input 
+                            type="date" 
+                            id="to" 
+                            name="to" 
+                            class="form-input"
+                            aria-describedby="to-help">
+                        <small id="to-help" class="form-help">Notes created until this date</small>
+                    </div>
+
+                    <!-- Sort By -->
+                    <div class="form-group">
+                        <label for="sortBy" class="form-label">Sort by</label>
+                        <select id="sortBy" class="form-input">
+                            <option value="date_desc">Date (newest first)</option>
+                            <option value="date_asc">Date (oldest first)</option>
+                            <option value="comments_desc">Comments (most first)</option>
+                            <option value="comments_asc">Comments (least first)</option>
+                        </select>
+                    </div>
+
+                    <!-- Search Button -->
+                    <div class="form-group">
+                        <button type="submit" class="btn-primary" id="searchBtn">
+                            Search
+                        </button>
+                    </div>
+
+                    <!-- Recent Searches -->
+                    <div class="form-group" id="recentSearchesContainer" style="display: none;">
+                        <label class="form-label">Recent searches</label>
+                        <div id="recentSearchesList" class="recent-searches-list"></div>
+                    </div>
+                </form>
+
+                <!-- Export Options -->
+                <div class="export-section" id="exportSection" style="display: none;">
+                    <h3 class="section-title">Export results</h3>
+                    <div class="export-buttons">
+                        <button class="btn-secondary" id="exportJSON">JSON</button>
+                        <button class="btn-secondary" id="exportGeoJSON">GeoJSON</button>
+                        <button class="btn-secondary" id="exportCSV">CSV</button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Map Container -->
+            <section class="map-section" aria-label="Results map">
+                <div id="map" role="application" aria-label="Interactive OpenStreetMap map"></div>
+                
+                <!-- Map Controls -->
+                <div class="map-controls">
+                    <button id="fitBounds" class="map-control-btn" title="Fit view to all results">
+                        <span>⊕</span>
+                    </button>
+                    <button id="toggleClusters" class="map-control-btn" title="Toggle clustering">
+                        <span>⊚</span>
+                    </button>
+                </div>
+            </section>
         </div>
-    </div>
-    <div class="status-bar" id="statusBar">
-        <div class="sending" id="sendingStatus">Sending API call...</div>
-        <div class="response-code" id="responseCodeStatus" style="display: none;">Response Code: <span id="responseCode"></span></div>
-        <div class="data-count" id="dataCountStatus" style="display: none;">Number of Data: <span id="dataCount"></span></div>
-        <div class="displaying" id="displayingStatus" style="display: none;">Displaying data on map...</div>
-    </div>
-    <div class="export-options" id="exportOptions">
-        <button onclick="exportToJSON()">Export to JSON</button>
-        <button onclick="exportToGeoJSON()">Export to GeoJSON</button>
-    </div>
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script>
-        const map = L.map('map').setView([50.8371, 4.3676], 9); // Zoom level to 9
+        <!-- Status Bar -->
+        <div class="status-bar" id="statusBar" role="status" aria-live="polite" style="display: none;">
+            <div class="status-content" id="statusContent"></div>
+        </div>
+    </main>
 
-        L.tileLayer('https://tile.openstreetmap.be/osmbe/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright/en">OpenStreetMap</a> contributors, Tiles generated by <a href="https://www.champs-libres.coop/">Champs-Libres</a>',
-            maxZoom: 18,
-        }).addTo(map);
+    <!-- Footer -->
+    <footer role="contentinfo" class="footer">
+        <div class="footer-content">
+            <p>
+                Data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>
+                | Tiles © <a href="https://www.champs-libres.coop/" target="_blank" rel="noopener">Champs-Libres</a>
+            </p>
+            <nav aria-label="Useful links" class="footer-nav">
+                
+                <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a>
+                <a href="https://github.com/pasloin/Basic-Osm-Notes-Search-BE" target="_blank" rel="noopener">Source code (GitHub)</a>
+                
+            </nav>
+            <p class="footer-credits">
+                2026 PasLoin
+            </p>
+        </div>
+    </footer>
 
-        // Update bounding box on map navigation
-        map.on('moveend', function() {
-            const bounds = map.getBounds();
-            const bbox = [
-                bounds.getSouthWest().lng,
-                bounds.getSouthWest().lat,
-                bounds.getNorthEast().lng,
-                bounds.getNorthEast().lat
-            ].join(',');
-            document.getElementById('bbox').value = bbox;
-        });
-
-        let searchResults = [];
-
-        function searchNotes() {
-            const form = document.getElementById('searchForm');
-            const formData = new FormData(form);
-            const params = new URLSearchParams();
-
-            for (const pair of formData.entries()) {
-                if (pair[1]) {
-                    params.append(pair[0], pair[1]);
-                }
-            }
-
-            // Set default limit to 9999 if not specified
-            if (!params.has('limit')) {
-                params.append('limit', '9999');
-            }
-
-            // Handle the closed parameter
-            const statusSwitch = document.getElementById('statusSwitch');
-            if (statusSwitch.checked) {
-                params.append('closed', '3650'); // Include closed notes up to 10 years ago
-            } else {
-                params.append('closed', '0'); // Include only open notes
-            }
-
-            const apiUrl = `https://api.openstreetmap.org/api/0.6/notes/search.json?${params.toString()}`;
-
-            // Show status bar
-            document.getElementById('statusBar').style.display = 'block';
-            document.getElementById('sendingStatus').style.display = 'block';
-            document.getElementById('responseCodeStatus').style.display = 'none';
-            document.getElementById('dataCountStatus').style.display = 'none';
-            document.getElementById('displayingStatus').style.display = 'none';
-
-            fetch(apiUrl)
-                .then(response => {
-                    document.getElementById('responseCode').textContent = response.status;
-                    document.getElementById('responseCodeStatus').style.display = 'block';
-                    return response.json();
-                })
-                .then(data => {
-                    const statusSwitch = document.getElementById('statusSwitch');
-                    const desiredStatus = statusSwitch.checked ? 'closed' : 'open';
-                    searchResults = data.features.filter(feature => feature.properties.status === desiredStatus);
-                    document.getElementById('dataCount').textContent = searchResults.length;
-                    document.getElementById('dataCountStatus').style.display = 'block';
-                    displayNotesOnMap(searchResults);
-                    document.getElementById('displayingStatus').style.display = 'block';
-                    document.getElementById('exportOptions').style.display = 'flex';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        function displayNotesOnMap(features) {
-            map.eachLayer(layer => {
-                if (layer instanceof L.Marker) {
-                    map.removeLayer(layer);
-                }
-            });
-
-            features.forEach(feature => {
-                const { coordinates } = feature.geometry;
-                const { comments } = feature.properties;
-                let popupContent = `<strong>Note ID:</strong> <a href="https://www.openstreetmap.org/note/${feature.properties.id}" target="_blank">${feature.properties.id}</a><br>`;
-                popupContent += `<strong>Created At:</strong> ${feature.properties.date_created}<br>`;
-                popupContent += `<strong>Status:</strong> ${feature.properties.status}<br><br>`;
-
-                comments.forEach(comment => {
-                    popupContent += `<strong>${comment.user}:</strong> ${comment.text}<br>`;
-                    popupContent += `<em>${comment.date}</em><br><br>`;
-                });
-
-                L.marker([coordinates[1], coordinates[0]]).addTo(map)
-                    .bindPopup(popupContent);
-            });
-        }
-
-        function exportToJSON() {
-            const jsonString = JSON.stringify(searchResults, null, 2);
-            const blob = new Blob([jsonString], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'notes.json';
-            a.click();
-        }
-
-        function exportToGeoJSON() {
-            const geojson = {
-                type: "FeatureCollection",
-                features: searchResults
-            };
-            const jsonString = JSON.stringify(geojson, null, 2);
-            const blob = new Blob([jsonString], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'notes.geojson';
-            a.click();
-        }
-
-        // Validator for Maximum Number of Results
-        document.getElementById('limit').addEventListener('input', function() {
-            const value = parseInt(this.value, 10);
-            if (value > 10000) {
-                this.value = 10000;
-            }
-        });
-    </script>
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/export.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Analytics -->
     <script data-goatcounter="https://pasloin.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
