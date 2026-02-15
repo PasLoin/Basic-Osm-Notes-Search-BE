@@ -15,14 +15,14 @@ const CONFIG = {
     // Map Configuration
     MAP: {
         CENTER: [50.831, 4.368], // 
-        ZOOM: 14,
+        ZOOM: 13,
         MIN_ZOOM: 10,
         MAX_ZOOM: 20,
         BELGIUM_BOUNDS: [
             [49.490919, 2.542619], // Southwest
             [51.508742, 7.232075]  // Northeast
         ],
-        DEFAULT_BBOX: '3.952332,50.699067,5.042725,50.986531'
+        DEFAULT_BBOX: '4.195404,50.728632,4.600525,50.954101'
     },
     
     // Tile Layer
