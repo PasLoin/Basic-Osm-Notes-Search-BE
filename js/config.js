@@ -14,9 +14,9 @@ const CONFIG = {
     
     // Map Configuration
     MAP: {
-        CENTER: [50.8371, 4.3676], // Brussels coordinates
+        CENTER: [50.831, 4.368], // 
         ZOOM: 14,
-        MIN_ZOOM: 8,
+        MIN_ZOOM: 10,
         MAX_ZOOM: 20,
         BELGIUM_BOUNDS: [
             [49.490919, 2.542619], // Southwest
