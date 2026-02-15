@@ -28,10 +28,34 @@ const MapManager = {
         // Set up event listeners
         this.setupEventListeners();
         
-        // Set map bounds to Belgium
-        this.resetBounds();
+        // Fit to initial bounds (DEFAULT_BBOX or Belgium)
+        this.fitInitialBounds();
         
         return this.map;
+    },
+    
+    /**
+     * Fit map to initial bounds (DEFAULT_BBOX or BELGIUM_BOUNDS)
+     */
+    fitInitialBounds() {
+        try {
+            // Parse DEFAULT_BBOX: 'min_lon,min_lat,max_lon,max_lat'
+            const bbox = CONFIG.MAP.DEFAULT_BBOX.split(',').map(Number);
+            if (bbox.length === 4 && bbox.every(val => !isNaN(val))) {
+                const bounds = [
+                    [bbox[1], bbox[0]], // Southwest [lat, lng]
+                    [bbox[3], bbox[2]]  // Northeast [lat, lng]
+                ];
+                this.map.fitBounds(bounds);
+                this.updateBboxInput();
+            } else {
+                // Fallback to Belgium bounds
+                this.resetBounds();
+            }
+        } catch (error) {
+            console.error('Error fitting initial bounds:', error);
+            this.resetBounds();
+        }
     },
     
     /**
