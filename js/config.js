@@ -17,7 +17,7 @@ const CONFIG = {
         CENTER: [50.831, 4.368], // 
         ZOOM: 10,
         MIN_ZOOM: 7,
-        MAX_ZOOM: 20,
+        MAX_ZOOM: 22,
         BELGIUM_BOUNDS: [
             [49.490919, 2.542619], // Southwest
             [51.508742, 7.232075]  // Northeast
